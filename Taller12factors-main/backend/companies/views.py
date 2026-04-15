@@ -5,12 +5,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from companies.mongo import companies_collection, material_listings_collection
 
-
 class CompanyViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request):
-        uid = request.firebase_user.get("uid")
+        # CORRECCIÓN: Usamos request.user.username (donde guardamos el email)
+        uid = request.user.username 
         companies = list(
             companies_collection.find(
                 {"owner_uid": uid},
@@ -32,7 +32,8 @@ class CompanyViewSet(viewsets.ViewSet):
         return Response(companies)
 
     def create(self, request):
-        uid = request.firebase_user.get("uid")
+        # CORRECCIÓN: Usamos request.user.username
+        uid = request.user.username 
         data = request.data
 
         document = {
@@ -52,7 +53,8 @@ class MaterialListingViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request):
-        uid = request.firebase_user.get("uid")
+        # CORRECCIÓN: Usamos request.user.username
+        uid = request.user.username 
         companies = list(companies_collection.find({"owner_uid": uid}, {"_id": 1}))
         company_ids = [company["_id"] for company in companies]
         items = list(material_listings_collection.find({"company_id": {"$in": company_ids}}))
@@ -73,7 +75,8 @@ class MaterialListingViewSet(viewsets.ViewSet):
             "unit": data.get("unit", "kg"),
             "location": data.get("location"),
             "status": data.get("status", "available"),
-            "published_by": request.firebase_user.get("uid"),
+            # CORRECCIÓN: Usamos request.user.username
+            "published_by": request.user.username,
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
