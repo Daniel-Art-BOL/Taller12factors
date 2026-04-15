@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EcoRed Circular</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+        .nav {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+        }
+        .nav h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .hidden {
+            display: none;
+        }
+        .auth-section, .app-section {
+            display: none;
+        }
+        .auth-section.show, .app-section.show {
+            display: block;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <!-- Authentication Section -->
+        <div id="auth-section" class="auth-section show">
+            <div class="card">
+                <h2 style="text-align: center;">EcoRed Circular</h2>
+                <p style="text-align: center; color: #666;">Inicia sesión para acceder a tu cuenta</p>
+
+                <div id="auth-message"></div>
+
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Correo electrónico</label>
+                        <input type="email" id="email" required placeholder="Correo electrónico">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="password" required placeholder="Contraseña">
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Iniciar Sesión</button>
+                </form>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="color: #666;">¿No tienes cuenta? <button id="show-register" class="btn" style="font-size: 14px; padding: 5px 10px;">Registrarse</button></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Section -->
+        <div id="register-section" class="auth-section">
+            <div class="card">
+                <h2 style="text-align: center;">Crear Cuenta</h2>
+                <p style="text-align: center; color: #666;">Regístrate en EcoRed Circular</p>
+
+                <div id="register-message"></div>
+
+                <form id="register-form">
+                    <div class="form-group">
+                        <label>Correo electrónico</label>
+                        <input type="email" id="register-email" required placeholder="Correo electrónico">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="register-password" required placeholder="Contraseña" minlength="6">
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Crear Cuenta</button>
+                </form>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="color: #666;">¿Ya tienes cuenta? <button id="show-login" class="btn" style="font-size: 14px; padding: 5px 10px;">Iniciar Sesión</button></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Section -->
+        <div id="app-section" class="app-section">
+            <nav class="nav">
+                <h1>EcoRed Circular</h1>
+                <div>
+                    <span id="user-email"></span>
+                    <button id="logout-btn" class="btn btn-danger" style="font-size: 14px; padding: 5px 10px; margin-left: 10px;">Cerrar Sesión</button>
+                </div>
+            </nav>
+
+            <div id="app-message"></div>
+
+            <!-- Companies Section -->
+            <div id="companies-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+                    <h2>Empresas Registradas</h2>
+                    <button id="show-company-form" class="btn">Agregar Empresa</button>
+                </div>
+
+                <!-- Company Form -->
+                <div id="company-form" class="card hidden">
+                    <h3>Agregar Nueva Empresa</h3>
+                    <form id="add-company-form">
+                        <div class="form-group">
+                            <label>Nombre de la Empresa</label>
+                            <input type="text" id="company-name" required placeholder="Nombre de la empresa">
+                        </div>
+                        <div class="form-group">
+                            <label>NIT</label>
+                            <input type="text" id="company-nit" required placeholder="NIT de la empresa">
+                        </div>
+                        <div class="form-group">
+                            <label>Ciudad</label>
+                            <input type="text" id="company-city" required placeholder="Ciudad">
+                        </div>
+                        <div class="form-group">
+                            <label>Sector</label>
+                            <input type="text" id="company-sector" required placeholder="Sector industrial">
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn">Guardar Empresa</button>
+                            <button type="button" id="cancel-company-form" class="btn btn-danger">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Companies Table -->
+                <div class="card">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>NIT</th>
+                                <th>Ciudad</th>
+                                <th>Sector</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="companies-table-body">
+                        </tbody>
+                    </table>
+                    <div id="companies-loading" class="loading">Cargando empresas...</div>
+                    <div id="companies-empty" class="hidden" style="text-align: center; padding: 20px; color: #666;">
+                        No hay empresas registradas aún.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Materials Section -->
+            <div id="materials-section" class="hidden">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+                    <h2>Listado de Materiales</h2>
+                    <div>
+                        <button id="back-to-companies" class="btn">Ver Empresas</button>
+                        <button id="show-material-form" class="btn" style="margin-left: 10px;">Agregar Material</button>
+                    </div>
+                </div>
+
+                <!-- Material Form -->
+                <div id="material-form" class="card hidden">
+                    <h3>Agregar Nuevo Material</h3>
+                    <form id="add-material-form">
+                        <div class="form-group">
+                            <label>Empresa</label>
+                            <select id="material-company" required>
+                                <option value="">Seleccionar empresa</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Material</label>
+                            <input type="text" id="material-type" required placeholder="Ej: Plástico PET, Cartón, Metal">
+                        </div>
+                        <div class="form-group">
+                            <label>Cantidad</label>
+                            <input type="number" id="material-quantity" required placeholder="Cantidad" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Unidad</label>
+                            <select id="material-unit">
+                                <option value="kg">Kilogramos (kg)</option>
+                                <option value="ton">Toneladas (ton)</option>
+                                <option value="m3">Metros cúbicos (m³)</option>
+                                <option value="unidades">Unidades</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Ubicación</label>
+                            <input type="text" id="material-location" required placeholder="Ciudad o dirección">
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="material-status">
+                                <option value="available">Disponible</option>
+                                <option value="reserved">Reservado</option>
+                                <option value="sold">Vendido</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn">Guardar Material</button>
+                            <button type="button" id="cancel-material-form" class="btn btn-danger">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Materials Table -->
+                <div class="card">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Empresa</th>
+                                <th>Material</th>
+                                <th>Cantidad</th>
+                                <th>Unidad</th>
+                                <th>Ubicación</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="materials-table-body">
+                        </tbody>
+                    </table>
+                    <div id="materials-loading" class="loading">Cargando materiales...</div>
+                    <div id="materials-empty" class="hidden" style="text-align: center; padding: 20px; color: #666;">
+                        No hay materiales registrados aún.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-PlL-o2IzXvE0Dzs0a3CL9Fkl-d5cXbA",
+            authDomain: "ecored-circular-74e5f.firebaseapp.com",
+            projectId: "ecored-circular-74e5f",
+            storageBucket: "ecored-circular-74e5f.appspot.com",
+            messagingSenderId: "726553665041",
+            appId: "1:726553665041:web:2857beeb18da9c12229bb0"
+        };
+
+        // Initialize Firebase
+        let app, auth;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            console.log('✅ Firebase inicializado correctamente');
+            console.log('Proyecto:', firebaseConfig.projectId);
+            console.log('Auth Domain:', firebaseConfig.authDomain);
+        } catch (error) {
+            console.error('❌ Error al inicializar Firebase:', error);
+            showMessage('auth-message', 'Error de inicialización de Firebase: ' + error.message, 'error');
+        }
+
+        // API Base URL
+        const API_BASE_URL = 'http://localhost:8000/api';
+
+        // DOM Elements
+        const authSection = document.getElementById('auth-section');
+        const registerSection = document.getElementById('register-section');
+        const appSection = document.getElementById('app-section');
+        const userEmail = document.getElementById('user-email');
+
+        // Auth State Observer
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in
+                console.log('✅ Usuario autenticado:', user.email);
+                authSection.classList.remove('show');
+                registerSection.classList.remove('show');
+                appSection.classList.add('show');
+                userEmail.textContent = user.email;
+                loadCompanies();
+            } else {
+                // User is signed out
+                console.log('❌ Usuario no autenticado');
+                appSection.classList.remove('show');
+                authSection.classList.add('show');
+                registerSection.classList.remove('show');
+            }
+        }, (error) => {
+            console.error('Error en verificación de autenticación:', error);
+        });
+
+        // Login Form
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!auth) {
+                showMessage('auth-message', 'Firebase no está inicializado correctamente', 'error');
+                return;
+            }
+
+            try {
+                const result = await signInWithEmailAndPassword(auth, email, password);
+                console.log('✅ Sesión iniciada:', result.user.email);
+                showMessage('auth-message', 'Inicio de sesión exitoso', 'success');
+            } catch (error) {
+                console.error('Error de login:', error.code, error.message);
+                let errorMsg = 'Error al iniciar sesión';
+                
+                if (error.code === 'auth/user-not-found') {
+                    errorMsg = 'Usuario no encontrado';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMsg = 'Contraseña incorrecta';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMsg = 'Correo electrónico inválido';
+                } else if (error.code === 'auth/user-disabled') {
+                    errorMsg = 'Usuario deshabilitado';
+                } else {
+                    errorMsg = error.message;
+                }
+                
+                showMessage('auth-message', errorMsg, 'error');
+            }
+        });
+
+        // Register Form
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+
+            if (password.length < 6) {
+                showMessage('register-message', 'La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+
+            try {
+                const result = await createUserWithEmailAndPassword(auth, email, password);
+                console.log('Usuario creado:', result.user.email);
+                showMessage('register-message', 'Cuenta creada exitosamente. Iniciando sesión...', 'success');
+                // Clear form
+                document.getElementById('register-form').reset();
+                // Auto redirect after short delay
+                setTimeout(() => {
+                    registerSection.classList.remove('show');
+                    authSection.classList.add('show');
+                    document.getElementById('email').value = email;
+                    document.getElementById('password').value = password;
+                }, 1500);
+            } catch (error) {
+                console.error('Error de registro:', error.code, error.message);
+                let errorMsg = 'Error al crear cuenta';
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMsg = 'Este correo ya está registrado';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMsg = 'Correo electrónico inválido';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMsg = 'La contraseña es muy débil';
+                } else if (error.code === 'auth/configuration-not-found') {
+                    errorMsg = 'Error de configuración de Firebase. Por favor verifica la consola.';
+                } else if (error.code === 'auth/operation-not-supported-in-this-environment') {
+                    errorMsg = 'Operación no soportada en este navegador';
+                } else {
+                    errorMsg = error.message;
+                }
+                
+                showMessage('register-message', errorMsg, 'error');
+            }
+        });
+
+        // Toggle between login and register
+        document.getElementById('show-register').addEventListener('click', () => {
+            authSection.classList.remove('show');
+            registerSection.classList.add('show');
+        });
+
+        document.getElementById('show-login').addEventListener('click', () => {
+            registerSection.classList.remove('show');
+            authSection.classList.add('show');
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            try {
+                if (!auth) {
+                    showMessage('app-message', 'Error: Firebase no está disponible', 'error');
+                    return;
+                }
+                await signOut(auth);
+                console.log('✅ Sesión cerrada');
+                showMessage('app-message', 'Sesión cerrada exitosamente', 'success');
+            } catch (error) {
+                console.error('Error al cerrar sesión:', error);
+                showMessage('app-message', 'Error al cerrar sesión: ' + error.message, 'error');
+            }
+        });
+
+        // Companies functionality
+        async function loadCompanies() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/companies/`, {
+                    headers: {
+                        'Authorization': `Bearer ${await getIdToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const companies = await response.json();
+                    displayCompanies(companies);
+                } else {
+                    showMessage('app-message', 'Error al cargar empresas', 'error');
+                }
+            } catch (error) {
+                showMessage('app-message', 'Error de conexión', 'error');
+            }
+        }
+
+        function displayCompanies(companies) {
+            const tbody = document.getElementById('companies-table-body');
+            const loading = document.getElementById('companies-loading');
+            const empty = document.getElementById('companies-empty');
+
+            loading.classList.add('hidden');
+
+            if (companies.length === 0) {
+                empty.classList.remove('hidden');
+                tbody.innerHTML = '';
+                return;
+            }
+
+            empty.classList.add('hidden');
+            tbody.innerHTML = companies.map(company => `
+                <tr>
+                    <td>${company.name}</td>
+                    <td>${company.nit}</td>
+                    <td>${company.city}</td>
+                    <td>${company.sector}</td>
+                    <td>
+                        <button onclick="viewMaterials(${company.id})" class="btn" style="font-size: 14px; padding: 5px 10px;">Ver Materiales</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Company form
+        document.getElementById('show-company-form').addEventListener('click', () => {
+            document.getElementById('company-form').classList.remove('hidden');
+        });
+
+        document.getElementById('cancel-company-form').addEventListener('click', () => {
+            document.getElementById('company-form').classList.add('hidden');
+            document.getElementById('add-company-form').reset();
+        });
+
+        document.getElementById('add-company-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                name: document.getElementById('company-name').value,
+                nit: document.getElementById('company-nit').value,
+                city: document.getElementById('company-city').value,
+                sector: document.getElementById('company-sector').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/companies/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${await getIdToken()}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    showMessage('app-message', 'Empresa creada exitosamente', 'success');
+                    document.getElementById('company-form').classList.add('hidden');
+                    document.getElementById('add-company-form').reset();
+                    loadCompanies();
+                } else {
+                    showMessage('app-message', 'Error al crear empresa', 'error');
+                }
+            } catch (error) {
+                showMessage('app-message', 'Error de conexión', 'error');
+            }
+        });
+
+        // Materials functionality
+        async function loadMaterials() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/material-listings/`, {
+                    headers: {
+                        'Authorization': `Bearer ${await getIdToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const materials = await response.json();
+                    displayMaterials(materials);
+                } else {
+                    showMessage('app-message', 'Error al cargar materiales', 'error');
+                }
+            } catch (error) {
+                showMessage('app-message', 'Error de conexión', 'error');
+            }
+        }
+
+        function displayMaterials(materials) {
+            const tbody = document.getElementById('materials-table-body');
+            const loading = document.getElementById('materials-loading');
+            const empty = document.getElementById('materials-empty');
+
+            loading.classList.add('hidden');
+
+            if (materials.length === 0) {
+                empty.classList.remove('hidden');
+                tbody.innerHTML = '';
+                return;
+            }
+
+            empty.classList.add('hidden');
+            tbody.innerHTML = materials.map(material => `
+                <tr>
+                    <td>${material.company_name}</td>
+                    <td>${material.material_type}</td>
+                    <td>${material.quantity}</td>
+                    <td>${material.unit}</td>
+                    <td>${material.location}</td>
+                    <td>${material.status}</td>
+                    <td>${new Date(material.created_at).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Global function for viewing materials
+        window.viewMaterials = function(companyId) {
+            document.getElementById('companies-section').classList.add('hidden');
+            document.getElementById('materials-section').classList.remove('hidden');
+            loadMaterials();
+        };
+
+        // Back to companies
+        document.getElementById('back-to-companies').addEventListener('click', () => {
+            document.getElementById('materials-section').classList.add('hidden');
+            document.getElementById('companies-section').classList.remove('hidden');
+        });
+
+        // Material form
+        document.getElementById('show-material-form').addEventListener('click', async () => {
+            // Load companies for the select
+            try {
+                const response = await fetch(`${API_BASE_URL}/companies/`, {
+                    headers: {
+                        'Authorization': `Bearer ${await getIdToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const companies = await response.json();
+                    const select = document.getElementById('material-company');
+                    select.innerHTML = '<option value="">Seleccionar empresa</option>' +
+                        companies.map(company =>
+                            `<option value="${company.id}">${company.name} - ${company.nit}</option>`
+                        ).join('');
+                }
+            } catch (error) {
+                showMessage('app-message', 'Error al cargar empresas', 'error');
+            }
+
+            document.getElementById('material-form').classList.remove('hidden');
+        });
+
+        document.getElementById('cancel-material-form').addEventListener('click', () => {
+            document.getElementById('material-form').classList.add('hidden');
+            document.getElementById('add-material-form').reset();
+        });
+
+        document.getElementById('add-material-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                company_id: document.getElementById('material-company').value,
+                material_type: document.getElementById('material-type').value,
+                quantity: document.getElementById('material-quantity').value,
+                unit: document.getElementById('material-unit').value,
+                location: document.getElementById('material-location').value,
+                status: document.getElementById('material-status').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/material-listings/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${await getIdToken()}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    showMessage('app-message', 'Material creado exitosamente', 'success');
+                    document.getElementById('material-form').classList.add('hidden');
+                    document.getElementById('add-material-form').reset();
+                    loadMaterials();
+                } else {
+                    showMessage('app-message', 'Error al crear material', 'error');
+                }
+            } catch (error) {
+                showMessage('app-message', 'Error de conexión', 'error');
+            }
+        });
+
+        // Helper functions
+        async function getIdToken() {
+            const user = auth.currentUser;
+            if (user) {
+                return await user.getIdToken();
+            }
+            return null;
+        }
+
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.className = type;
+            element.innerHTML = message;
+            setTimeout(() => {
+                element.innerHTML = '';
+                element.className = '';
+            }, 5000);
+        }
+    </script>
+  </body>
+</html>
